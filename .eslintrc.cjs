@@ -12,7 +12,7 @@ module.exports = {
   ignorePatterns: ["dist"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
   settings: { react: { version: "18.2" } },
-  plugins: ["react-refresh"],
+  plugins: ["react-refresh", "simple-import-sort"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -20,5 +20,27 @@ module.exports = {
     ],
     "import/no-unresolved": "off",
     "import/no-absolute-path": "off",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        groups: [
+          // Packages `react` related packages come first.
+          ["^react", "^@?\\w"],
+          // Side effect imports.
+          ["^\\u0000"],
+          // Internal components, packages.
+          // eslint-disable-next-line no-useless-escape
+          ["^(@/components)(/.*|$)"],
+          ["^(@)(/.*|$)"],
+          ["^(/)"],
+          // Parent imports. Put `..` last.
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+          // Other relative imports. Put same-folder imports and `.` last.
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          // Style imports.
+          ["^.+\\.(css)$", "^.+\\.(scss)$"],
+        ],
+      },
+    ],
   },
 };
